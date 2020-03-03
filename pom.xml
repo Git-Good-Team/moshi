@@ -12,6 +12,10 @@
   <artifactId>moshi</artifactId>
   <name>Moshi</name>
 
+  <properties>
+    <mockito.version>2.23.0</mockito.version>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>com.squareup.okio</groupId>
@@ -36,6 +40,12 @@
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter</artifactId>
       <version>RELEASE</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
+      <version>${mockito.version}</version>
       <scope>test</scope>
     </dependency>
 <!--    <dependency>-->

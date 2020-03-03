@@ -16,6 +16,10 @@
 package com.squareup.moshi;
 
 import java.io.IOException;
+
+import static com.squareup.moshi.JsonReader.Token.END_ARRAY;
+import static java.util.Arrays.asList;
+import static org.mockito.Mockito.*;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
@@ -35,8 +39,11 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import javax.annotation.Nullable;
+
+import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.mockito.MockitoAnnotations;
 
 import static java.util.Collections.singletonList;
 import static java.util.Collections.singletonMap;
@@ -44,6 +51,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 
 public final class ObjectAdapterTest {
+
+  private JsonReader mockedReader;
+
+  @Before
+  public void setup() {
+    //  Mocks are being created.
+    mockedReader = mock(JsonReader.class);
+    MockitoAnnotations.initMocks(this);
+  }
+
   @Test public void toJsonUsesRuntimeType() {
     Delivery delivery = new Delivery();
     delivery.address = "1455 Market St.";
@@ -289,6 +306,15 @@ public final class ObjectAdapterTest {
     JsonReader jsonReader = TestUtil.newReader("null");
 
     assertEquals(adapter.fromJson(jsonReader), null);
+  }
+
+  @Test (expected = IllegalStateException.class)
+  public void objectJsonAdapterMockReaderThrowException() throws IOException {
+    Moshi moshi = new Moshi.Builder().build();
+    StandardJsonAdapters.ObjectJsonAdapter adapter = new StandardJsonAdapters.ObjectJsonAdapter(moshi);
+
+    when(mockedReader.peek()).thenReturn(END_ARRAY);
+    adapter.fromJson(mockedReader);
   }
 
   static class Delivery {
